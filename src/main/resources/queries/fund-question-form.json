@@ -1,0 +1,61 @@
+[
+  {
+    "name": "/customerMessage@persist",
+    "query-name": "insert-fund-question",
+    "title": "customerMessage.persist.title",
+    "id-param": "insert.fund-question.question-id",
+    "query-update-name": "update-fund-question",
+    "query-insert-name": "insert-fund-question",
+    "control-in-row": 2,
+    "select": [
+      { "name": "selectFundQuestion", "query-name": "select-fund-question", "mapper": [
+        "questionId:insert.fund-question.question-id",
+        "cellPhone:insert.fund-question.cell-phone",
+        "questionDesc:insert.fund-question.question-desc",
+        "answerDesc:insert.fund-question.answer-desc",
+        "createDate:insert.fund-question.create-date"
+      ]},
+      { "name": "statusList", "query-name": "base-question-status-type" }
+    ],
+    "control": [
+      { "name": "insert.fund-question.question-id", "title": "customer-message.persist.question-id", "type": "hidden" },
+      { "name": "insert.fund-question.cell-phone", "title": "customer-message.persist.cell-phone", "type": "string", "disabled": "true" },
+      { "name": "insert.fund-question.question-desc", "title": "customer-message.persist.question-desc", "type": "text", "disabled": "true" },
+      { "name": "insert.fund-question.answer-desc", "title": "customer-message.persist.answer-desc", "type": "text" },
+      { "name": "insert.fund-question.create-date", "title": "customer-message.persist.create-date", "type": "date", "disabled": "true" }
+    ],
+    "button": [
+      { "name": "save", "type": "submit", "title": "button.save" },
+      { "name": "redirect", "type": "redirect", "title": "button.return", "return-url": "customerMessage.do?method=list" }
+    ]
+  },
+  {
+    "name": "/customerMessage@list",
+    "title": "customerMessage.list.title",
+    "query-name": "fund-questions-2",
+    "control-in-row": 1,
+    "select": [
+      { "name": "statusList", "query-name": "base-question-status-type" }
+    ],
+    "control": [
+      { "name": "search.fund-question.status", "title": "customer-message.persist.status", "type": "select", "items": "statusList", "option-value": "statusTypeId", "option-title": "title" },
+      { "name": "search.fund-question.cell-phone", "title": "customer-message.persist.cell-phone", "type": "string" },
+      { "name": "search.fund-question.from-create-date", "title": "search.fund-question.from-create-date", "type": "date" },
+      { "name": "search.fund-question.to-create-date", "title": "search.fund-question.to-create-date", "type": "date" }
+    ],
+    "button": [
+      { "name": "clear", "type": "reset", "title": "button.reset" },
+      { "name": "submit", "type": "submit", "title": "button.search" }
+    ],
+    "decorator": "ir.rayan.dev.dynamic.web.customer.CustomerMessageDecorator",
+    "sortPropertyParamName": "sortProperty",
+    "sortOrderParamName": "sortOrder",
+    "rowPerPageParamName": "rowPerPage",
+    "columns": [
+      { "property": "createDate", "title-key": "fund.question.create-date", "style-class": "", "sortable": "true" },
+      { "property": "cellPhone", "title-key": "fund.question.cell-phone", "style-class": "", "sortable": "true" },
+      { "property": "questionDesc", "title-key": "fund.question.question-desc", "style-class": "" },
+      { "property": "answerDesc", "title-key": "fund.question.answer-desc", "style-class": "" }
+    ]
+  }
+]

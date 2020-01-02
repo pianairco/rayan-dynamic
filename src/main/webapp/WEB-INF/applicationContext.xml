@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"-->
+<!--"http://www.springframework.org/dtd/spring-beans.dtd">-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-2.5.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd">
+    <context:annotation-config/>
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <bean id="formManagerProvider" class="ir.rayan.dev.dynamic.web.FormManagerProvider" init-method="init" scope="singleton">
+        <property name="jsonResources">
+            <list>
+                <value>/queries/fund-question-form.json</value>
+            </list>
+        </property>
+        <property name="sqlManagerProvider">
+            <ref bean="sqlManagerProvider"></ref>
+        </property>
+    </bean>
+
+    <bean id="sqlManagerProvider" class="ir.rayan.dev.dynamic.web.SQLManagerProvider" init-method="init" scope="singleton">
+        <property name="jsonResources">
+            <list>
+                <value>/queries/fund-question-query.json</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location">
+            <value>classpath:jdbc.properties</value>
+        </property>
+    </bean>
+
+    <!-- Transaction template for Managers, from:
+   http://blog.exis.com/colin/archives/2004/07/31/concise-transaction-definitions-spring-11/ -->
+    <bean id="txProxyTemplate" abstract="true"
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager"><ref bean="transactionManager"/></property>
+        <property name="transactionAttributes">
+            <props>
+                <prop key="save*">PROPAGATION_REQUIRED,-Exception</prop>
+                <prop key="remove*">PROPAGATION_REQUIRED,-Exception</prop>
+                <prop key="delete*">PROPAGATION_REQUIRED,-Exception</prop>
+                <prop key="update*">PROPAGATION_REQUIRED,-Exception</prop>
+                <prop key="add*">PROPAGATION_REQUIRED,-Exception</prop>
+                <prop key="execute*">PROPAGATION_REQUIRED,-Exception</prop>
+                <prop key="unlink*">PROPAGATION_REQUIRED,-Exception</prop>
+                <prop key="change*">PROPAGATION_REQUIRED,-Exception</prop>
+                <prop key="getAppParamDl">PROPAGATION_REQUIRED,-Exception</prop>
+                <prop key="getAppParamSl">PROPAGATION_REQUIRED,-Exception</prop>
+                <prop key="renumber*">PROPAGATION_REQUIRED,-Exception</prop>
+                <prop key="calculate*">PROPAGATION_REQUIRED,-Exception</prop>
+                <prop key="checkIfVoucherIsChangable">PROPAGATION_REQUIRED,-Exception</prop>
+                <prop key="openFiscalYear">PROPAGATION_REQUIRED,-Exception</prop>
+                <prop key="closeFiscalYear">PROPAGATION_REQUIRED,-Exception</prop>
+                <prop key="setVoucherToNRecPay">PROPAGATION_REQUIRED,-Exception</prop>
+                <prop key="unsetOrderLine">PROPAGATION_REQUIRED,-Exception</prop>
+                <prop key="revoucherRecPay">PROPAGATION_REQUIRED,-Exception</prop>
+                <prop key="importTransactions">PROPAGATION_REQUIRED,-Exception</prop>
+                <prop key="sendEmail">PROPAGATION_REQUIRED,-Exception</prop>
+                <prop key="sendSms*">PROPAGATION_REQUIRED,-Exception</prop>
+                <prop key="doCharityFundFairIssues">PROPAGATION_REQUIRED,-Exception</prop>
+
+                <!--<prop key="checkIfVoucherIsChangable">PROPAGATION_NOT_SUPPORTED</prop>-->
+
+                <prop key="logAction">PROPAGATION_NOT_SUPPORTED</prop>
+                <!--<prop key="logAction">PROPAGATION_NESTED</prop>-->
+
+                <prop key="*">PROPAGATION_REQUIRED, readOnly</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="jdbcTemplate"
+          class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource">
+            <ref bean="dataSource"/>
+        </property>
+    </bean>
+
+    <bean id="genericJdbcDAO" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="ir.rayan.dev.orm.GenericJdbcDAOImpl">
+                <property name="jdbcTemplate">
+                    <ref bean="jdbcTemplate"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="genericManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="ir.rayan.dev.orm.GenericManagerImpl">
+                <property name="genericJdbcDAO">
+                    <ref bean="genericJdbcDAO"/>
+                </property>
+              </bean>
+        </property>
+    </bean>
+
+    <bean id="entityJdbcDAOImpl" class="com.objecty.dtsource.dao.impl.EntityDAOJdbcImpl">
+        <property name="dataSource">
+            <ref bean="dataSource"/>
+        </property>
+    </bean>
+
+    <bean id="entityJdbcManagerImpl" class="com.objecty.dtsource.service.impl.EntityManagerImpl">
+        <property name="entityDAO">
+            <ref local="entityJdbcDAOImpl"/>
+        </property>
+    </bean>
+
+    <bean id="entityJdbcManager" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="target">
+            <ref local="entityJdbcManagerImpl"/>
+        </property>
+        <property name="transactionAttributes">
+            <props>
+                <prop key="*">PROPAGATION_REQUIRED,readOnly</prop>
+            </props>
+        </property>
+    </bean>
+</beans>

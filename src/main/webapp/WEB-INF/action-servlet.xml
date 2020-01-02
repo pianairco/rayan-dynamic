@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+        "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+    <bean name="/customerMessage" class="ir.rayan.dev.dynamic.web.CommonDispatchAction" singleton="false">
+        <property name="manager">
+            <ref bean="genericManager"/>
+        </property>
+        <property name="sqlManagerProvider">
+            <ref bean="sqlManagerProvider" />
+        </property>
+        <property name="formManagerProvider">
+            <ref bean="formManagerProvider" />
+        </property>
+    </bean>
+
+    <bean name="/sample" class="ir.rayan.dev.dynamic.web.CustomDispatchAction" singleton="false">
+        <property name="manager">
+            <ref bean="genericManager"/>
+        </property>
+        <property name="sqlManagerProvider">
+            <ref bean="sqlManagerProvider" />
+        </property>
+        <property name="formManagerProvider">
+            <ref bean="formManagerProvider" />
+        </property>
+    </bean>
+</beans>

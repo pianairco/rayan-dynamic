@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<tiles-definitions>
+    <definition name="main.page" page="/layout.jsp">
+        <put name="title" value="broker"/>
+        <put name="header" value="/header.jsp"/>
+        <put name="menu" value="/menu.html"/>
+        <put name="jsmenu" value="/menu.jsp"/>
+        <put name="body" value="/body.jsp"/>
+        <put name="footer" value="/footer.jsp"/>
+    </definition>
+
+    <definition name="common.page" extends="main.page">
+        <put name="body" value="/common.jsp"/>
+    </definition>
+
+    <definition name="custom.page" extends="main.page">
+        <put name="body" value="/custom.jsp"/>
+    </definition>
+</tiles-definitions>
