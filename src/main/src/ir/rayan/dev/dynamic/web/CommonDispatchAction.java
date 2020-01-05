@@ -4,8 +4,9 @@ import ir.rayan.data.form.ElementSelect;
 import ir.rayan.data.form.FormDef;
 import ir.rayan.data.form.FormPersistDef;
 import ir.rayan.data.form.FormSelectDef;
-import ir.rayan.data.sql.RayanSQLException;
-import ir.rayan.data.sql.SQLManager;
+import ir.rayan.data.sql.impl.StrutsParameterProvider;
+import ir.rayan.dev.data.sql.RayanSQLException;
+import ir.rayan.dev.data.sql.SQLManager;
 import ir.rayan.dev.orm.GenericManager;
 import org.apache.struts.action.*;
 import org.apache.struts.actions.DispatchAction;
@@ -127,9 +128,10 @@ public class CommonDispatchAction extends DispatchAction {
         if(!formDef.getSelects().isEmpty()) {
             for(ElementSelect elementSelect : formDef.getSelects()) {
                 try {
-                    sqlManager.query(elementSelect.getQueryName(),
-                            manager.getGenericJdbcDAO().getDataSource(),
-                            request, new LinkedHashMap<>(), elementSelect.getName());
+                    String name = elementSelect.getName();
+                    Object o = sqlManager.selectValue(elementSelect.getQueryName(),
+                            new StrutsParameterProvider(request, new LinkedHashMap<>()));
+                    request.setAttribute(name, o);
                     if(elementSelect.getMapper() != null && !elementSelect.getMapper().isEmpty()) {
                         Object attribute = request.getAttribute(elementSelect.getName());
                         if(attribute != null && attribute instanceof List && ((List)attribute).size() == 1) {
@@ -197,32 +199,18 @@ public class CommonDispatchAction extends DispatchAction {
 
     protected void executeCommonInsert(HttpServletRequest request, HttpServletResponse response, FormPersistDef formPersistDef)
             throws SQLException, RayanSQLException {
-        sqlManager.query(formPersistDef.getQueryInsertName(), manager.getGenericJdbcDAO().getDataSource(), request, null);
+        sqlManager.query(formPersistDef.getQueryInsertName(), new StrutsParameterProvider(request, new LinkedHashMap<>()));
     }
 
     protected void executeCommonUpdate(HttpServletRequest request, HttpServletResponse response, FormPersistDef formPersistDef)
             throws SQLException, RayanSQLException {
-        sqlManager.query(formPersistDef.getQueryUpdateName(), manager.getGenericJdbcDAO().getDataSource(), request, null);
+        sqlManager.query(formPersistDef.getQueryUpdateName(), new StrutsParameterProvider(request, new LinkedHashMap<>()));
     }
 
     protected void executeCommonSelect(HttpServletRequest request, HttpServletResponse response, FormSelectDef formSelectDef)
             throws SQLException {
         request.setAttribute("include", "list");
-        String query = sqlManager.createQuery(formSelectDef.getQueryName(), request, null);
+        String query = sqlManager.createQuery(formSelectDef.getQueryName(), new StrutsParameterProvider(request, new LinkedHashMap<>()));
         request.setAttribute(formSelectDef.getQueryName(), query);
-
-//        sqlManager.query(formSelectDef.getQueryName(), getManager().getGenericJdbcDAO().getDataSource(), request, null);
-
-//        if(!formSelectDef.getSelects().isEmpty()) {
-//            for(ElementSelect elementSelect : formSelectDef.getSelects()) {
-//                try {
-//                    sqlManager.query(elementSelect.getQueryName(),
-//                            getManager().getGenericJdbcDAO().getDataSource(),
-//                            request, new LinkedHashMap<>(), elementSelect.getName());
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
     }
 }

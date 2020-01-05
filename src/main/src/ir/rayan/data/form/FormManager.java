@@ -1,6 +1,6 @@
 package ir.rayan.data.form;
 
-import ir.rayan.data.sql.SQLManager;
+import ir.rayan.dev.data.sql.SQLManager;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedHashMap;

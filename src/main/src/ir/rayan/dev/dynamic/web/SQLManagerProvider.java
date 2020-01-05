@@ -1,8 +1,9 @@
 package ir.rayan.dev.dynamic.web;
 
-import ir.rayan.data.sql.SQLManager;
-import ir.rayan.data.sql.SQLModelManager;
+import ir.rayan.dev.data.sql.SQLManager;
+import ir.rayan.dev.data.sql.SQLModelManager;
 
+import javax.sql.DataSource;
 import java.io.InputStream;
 
 /**
@@ -11,9 +12,14 @@ import java.io.InputStream;
 public class SQLManagerProvider {
     private String[] jsonResources;
     private SQLManager sqlManager;
+    private DataSource dataSource;
 
     public void setJsonResources(String[] jsonResources) {
         this.jsonResources = jsonResources;
+    }
+
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     public void init() throws Exception {
@@ -21,7 +27,7 @@ public class SQLManagerProvider {
         for (int i = 0; i < jsonResources.length; i++) {
             inputStreams[i] = SQLManagerProvider.class.getResourceAsStream(jsonResources[i]);
         }
-        sqlManager = SQLManager.createSQLManager(SQLModelManager.getNewInstance(inputStreams));
+        sqlManager = SQLManager.createSQLManager(SQLModelManager.getNewInstance(inputStreams), dataSource);
     }
 
     public SQLManager getSqlManager() {

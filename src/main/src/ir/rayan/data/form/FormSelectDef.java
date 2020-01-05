@@ -1,7 +1,7 @@
 package ir.rayan.data.form;
 
-import ir.rayan.data.sql.SQLParamDef;
-import ir.rayan.data.sql.SelectDef;
+import ir.rayan.dev.data.sql.SQLParamDef;
+import ir.rayan.dev.data.sql.SelectDef;
 
 import java.util.ArrayList;
 import java.util.Collections;

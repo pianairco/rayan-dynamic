@@ -1,24 +1,15 @@
 package ir.rayan.dev.dynamic.web;
 
-import ir.rayan.data.form.ElementSelect;
-import ir.rayan.data.form.FormDef;
-import ir.rayan.data.form.FormPersistDef;
-import ir.rayan.data.form.FormSelectDef;
-import ir.rayan.data.sql.RayanSQLException;
-import ir.rayan.data.sql.SQLManager;
+import ir.rayan.dev.data.sql.RayanSQLException;
+import ir.rayan.dev.data.sql.SQLManager;
 import ir.rayan.dev.orm.GenericManager;
-import org.apache.struts.action.*;
-import org.apache.struts.actions.DispatchAction;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.sql.SQLException;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by mj.rahmati on 12/31/2019.
